@@ -1,5 +1,5 @@
 import { injectable, inject } from 'inversify';
-import { TYPES } from '../inversify/InversifySymbols';
+import { SYMBOLS } from '../inversify/InversifySymbols';
 import { DiscordLibrary } from '../infrastructure/library/DiscordLibrary';
 import { Message } from 'discord.js';
 
@@ -7,7 +7,7 @@ import { Message } from 'discord.js';
 export class DiscordBot {
   private readonly TARGET_CHANNEL_LIST = [''];
 
-  constructor(@inject(TYPES.DiscordLibrary) private readonly library: DiscordLibrary) {}
+  constructor(@inject(SYMBOLS.DiscordLibrary) private readonly library: DiscordLibrary) {}
 
   connectBot() {
     this.library.client.on('ready', () => {});

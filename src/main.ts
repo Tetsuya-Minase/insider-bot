@@ -1,6 +1,6 @@
 import { DiscordBot } from './interfaces/DiscordBot';
-import { TYPES } from './inversify/InversifySymbols';
+import { SYMBOLS } from './inversify/InversifySymbols';
 import { container } from './inversify/InversifyContainers';
 
-const bot = container.get<DiscordBot>(TYPES.DiscordBot);
+const bot = container.get<DiscordBot>(SYMBOLS.DiscordBot);
 bot.connectBot();
