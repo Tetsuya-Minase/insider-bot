@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
 import { DiscordLibrary } from '../infrastructure/library/DiscordLibrary';
-import { SYMBOLS } from './InversifySymbols';
+import { SYMBOLS } from './symbols';
 import { DiscordBot } from '../interfaces/DiscordBot';
 
 export const container = new Container({ defaultScope: 'Singleton' });

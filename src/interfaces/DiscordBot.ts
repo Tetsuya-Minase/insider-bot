@@ -1,5 +1,5 @@
 import { injectable, inject } from 'inversify';
-import { SYMBOLS } from '../inversify/InversifySymbols';
+import { SYMBOLS } from '../di/symbols';
 import { DiscordLibrary } from '../infrastructure/library/DiscordLibrary';
 import { Message } from 'discord.js';
 
