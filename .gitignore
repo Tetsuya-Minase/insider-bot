@@ -9,3 +9,6 @@
 
 # log
 yarn-error.log
+
+# config
+default.json
