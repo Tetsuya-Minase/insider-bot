@@ -3,7 +3,10 @@ import { Container } from 'inversify';
 import { DiscordLibrary } from '../infrastructure/library/DiscordLibrary';
 import { SYMBOLS } from './symbols';
 import { DiscordBot } from '../interfaces/DiscordBot';
+import { InsiderServiceImpl } from '../application/impl/InsiderServiceImpl';
+import { InsiderService } from '../application/InsiderService';
 
 export const container = new Container({ defaultScope: 'Singleton' });
 container.bind<DiscordLibrary>(SYMBOLS.DiscordLibrary).to(DiscordLibrary);
 container.bind<DiscordBot>(SYMBOLS.DiscordBot).to(DiscordBot);
+container.bind<InsiderService>(SYMBOLS.InsiderService).to(InsiderServiceImpl);
