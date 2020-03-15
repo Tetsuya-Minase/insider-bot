@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Tetsuya-Minase/insider-bot#readme",
   "devDependencies": {
+    "@types/config": "^0.0.36",
     "@types/inversify": "^2.0.33",
     "@typescript-eslint/eslint-plugin": "^2.23.0",
     "@typescript-eslint/parser": "^2.23.0",

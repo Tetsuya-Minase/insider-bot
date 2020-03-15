@@ -2,10 +2,12 @@ import { injectable } from 'inversify';
 import { InsiderService } from '../InsiderService';
 import { Message } from 'discord.js';
 import { DiscordLibrary } from '../../infrastructure/library/DiscordLibrary';
+import config from 'config';
 
 @injectable()
 export class InsiderServiceImpl implements InsiderService {
-  private readonly TARGET_CHANNEL_LIST = [''];
+  private readonly TARGET_CHANNEL_LIST = config.get<string[]>('discord.server');
+
   manageGame(message: Message, library: DiscordLibrary): void {
     if (message.content.includes('<@!357120122470531074>')) {
       const targetChannel = library.client.guilds.cache.find(item => this.TARGET_CHANNEL_LIST.includes(item.name));
