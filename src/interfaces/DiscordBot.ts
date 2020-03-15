@@ -10,19 +10,20 @@ export class DiscordBot {
   constructor(@inject(SYMBOLS.DiscordLibrary) private readonly library: DiscordLibrary) {}
 
   connectBot() {
-    this.library.client.on('ready', () => {});
     this.library.client.on('message', (msg: Message) => {
-      if (msg.content === 'ping') {
+      if (msg.content.includes('<@!357120122470531074>')) {
         const targetChannel = this.library.client.guilds.cache.find(item =>
           this.TARGET_CHANNEL_LIST.includes(item.name)
         );
         if (targetChannel != undefined) {
-          const targetUser = [''];
-          targetChannel.members.cache
-            .filter(item => {
-              return targetUser.includes(item.user.username);
-            })
-            .forEach(item => item.user.send('message'));
+          if (msg.content.includes('casting')) {
+            const player = msg.content.split(' ');
+            targetChannel.members.cache
+              .filter(item => {
+                return player.includes(item.user.username);
+              })
+              .forEach(item => item.user.send('message'));
+          }
         }
         msg.reply('全員に配役したよ');
       }
