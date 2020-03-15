@@ -1,7 +1,8 @@
 const path = require('path');
+const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
-  mode: 'production',
+  mode: 'development',
   entry: path.join(__dirname, '/src/main.ts'),
   target: 'node',
   module: {
@@ -13,6 +14,10 @@ module.exports = {
           {loader: 'eslint-loader'}
         ],
         exclude: /node_modules/
+      },
+      {
+        test: /\.node$/,
+        use: 'node-loader'
       }
     ]
   },
@@ -21,7 +26,6 @@ module.exports = {
     modules: [path.join(__dirname, 'src'), 'node_modules']
   },
   output: {
-    libraryTarget: 'this',
     path: path.join(__dirname, 'dist'),
     filename: 'app.js'
   },
