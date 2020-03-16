@@ -1,32 +1,22 @@
 import { injectable, inject } from 'inversify';
-import { SYMBOLS } from '../inversify/InversifySymbols';
+import { SYMBOLS } from '../di/symbols';
 import { DiscordLibrary } from '../infrastructure/library/DiscordLibrary';
 import { Message } from 'discord.js';
+import { InsiderService } from '../application/InsiderService';
+import config from 'config';
 
 @injectable()
 export class DiscordBot {
-  private readonly TARGET_CHANNEL_LIST = [''];
-
-  constructor(@inject(SYMBOLS.DiscordLibrary) private readonly library: DiscordLibrary) {}
+  constructor(
+    @inject(SYMBOLS.DiscordLibrary) private readonly library: DiscordLibrary,
+    @inject(SYMBOLS.InsiderService) private readonly insiderService: InsiderService,
+    private readonly token: string = config.get<string>('discord.token')
+  ) {}
 
   connectBot() {
-    this.library.client.on('ready', () => {});
     this.library.client.on('message', (msg: Message) => {
-      if (msg.content === 'ping') {
-        const targetChannel = this.library.client.guilds.cache.find(item =>
-          this.TARGET_CHANNEL_LIST.includes(item.name)
-        );
-        if (targetChannel != undefined) {
-          const targetUser = [''];
-          targetChannel.members.cache
-            .filter(item => {
-              return targetUser.includes(item.user.username);
-            })
-            .forEach(item => item.user.send('message'));
-        }
-        msg.reply('全員に配役したよ');
-      }
+      this.insiderService.manageGame(msg, this.library);
     });
-    this.library.client.login('');
+    this.library.client.login(this.token);
   }
 }
