@@ -16,7 +16,7 @@ export class DiscordUtilityService {
     return library.client.guilds.cache.find(item => this.TARGET_CHANNEL_LIST.includes(item.name));
   }
 
-  getUserList(message: Message): String[] {
+  getUserList(message: Message): string[] {
     // mention command userなので最初は捨てる
     return message.content.split(' ').slice(2);
   }
