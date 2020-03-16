@@ -3,5 +3,6 @@ export const SYMBOLS = {
   DiscordBot: Symbol.for('DiscordBot'),
   DiscordUtilityService: Symbol.for('DiscordUtilityService'),
   InsiderService: Symbol.for('InsiderService'),
-  InsiderGameService: Symbol.for('InsiderGameService')
+  InsiderGameService: Symbol.for('InsiderGameService'),
+  ThemeLibrary: Symbol.for('ThemeLibrary')
 };
