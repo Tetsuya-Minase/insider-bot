@@ -1,20 +1,21 @@
-import { injectable } from 'inversify';
+import { injectable, inject } from 'inversify';
 import { InsiderService } from '../InsiderService';
 import { Message } from 'discord.js';
 import { DiscordLibrary } from '../../infrastructure/library/DiscordLibrary';
 import config from 'config';
+import { SYMBOLS } from '../../di/symbols';
+import { DiscordUtilityService } from '../../domain/service/discord/DiscordUtilityService';
 
 @injectable()
 export class InsiderServiceImpl implements InsiderService {
-  private readonly TARGET_CHANNEL_LIST = config.get<string[]>('discord.server');
-  private readonly BOT_ID = config.get<string>('discord.botId');
+  constructor(@inject(SYMBOLS.DiscordUtilityService) private readonly discordUtilityService: DiscordUtilityService) {}
 
   manageGame(message: Message, library: DiscordLibrary): void {
-    if (message.content.includes(`<@!${this.BOT_ID}>`)) {
-      const targetChannel = library.client.guilds.cache.find(item => this.TARGET_CHANNEL_LIST.includes(item.name));
+    if (this.discordUtilityService.isMention(message)) {
+      const targetChannel = this.discordUtilityService.getTargetChannel(library);
       if (targetChannel != undefined) {
         if (message.content.includes('casting')) {
-          const player = message.content.split(' ');
+          const player = this.discordUtilityService.getUserList(message);
           targetChannel.members.cache
             .filter(item => {
               return player.includes(item.user.username);
