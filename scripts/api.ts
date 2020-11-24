@@ -1,5 +1,18 @@
 function getWordData(): string[] {
-  return ['hoge', 'huga', 'piyo'];
+  const sheet = SpreadsheetApp.getActive().getSheetByName('ワード');
+  if (sheet == null) {
+    return [];
+  }
+  return (
+    sheet
+      // A列にワードが入っているので全部取ってくる
+      .getRange('A:A')
+      .getValues()
+      // 配列の1個目に単語が入っているので、入っているもののみで絞る
+      .filter((value): value is string[] => !!value[0])
+      // 二次元配列担ってしまっているので戻す
+      .reduce((pre, cur) => [...pre, ...cur], [])
+  );
 }
 
 function doGet() {
