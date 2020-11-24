@@ -4,10 +4,11 @@ import { InvalidPlayerError } from '../../model/InvalidPlayerError';
 import shuffle from 'lodash/shuffle';
 import { SYMBOLS } from '../../../di/symbols';
 import { ThemeLibrary } from '../../../infrastructure/library/ThemeLibrary';
+import { Roles } from '../../InsiderGameTypes';
 
 @injectable()
 export class InsiderGameService {
-  private readonly baseRole = ['マスター', 'インサイダー', '庶民', '庶民'];
+  private readonly baseRole: Roles[] = ['マスター', 'インサイダー', '庶民', '庶民'];
 
   constructor(@inject(SYMBOLS.ThemeLibrary) private readonly themeLibrary: ThemeLibrary) {}
 
@@ -21,7 +22,7 @@ export class InsiderGameService {
       throw new InvalidPlayerError(playerList.size);
     }
     const roleList = this.getRoleList(playerList.size);
-    // TODO: やめたい
+    // TODO: やめたい。役職取るのをジェネレーターにすればマシになりそう
     // ループ用index
     let index = 0;
     const theme = this.themeLibrary.getTheme();
@@ -37,7 +38,10 @@ export class InsiderGameService {
     return 'プレイヤーに配役しました';
   }
 
-  private getRoleList(playerCount: number): string[] {
-    return shuffle([...this.baseRole, ...[...new Array(playerCount + 1 - this.baseRole.length)].map(_ => '庶民')]);
+  private getRoleList(playerCount: number): Roles[] {
+    return shuffle([
+      ...this.baseRole,
+      ...[...new Array(playerCount + 1 - this.baseRole.length)].map(_ => '庶民')
+    ]) as Roles[];
   }
 }
