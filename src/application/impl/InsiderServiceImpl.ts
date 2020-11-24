@@ -13,9 +13,9 @@ export class InsiderServiceImpl implements InsiderService {
     @inject(SYMBOLS.InsiderGameService) private readonly insiderGameService: InsiderGameService
   ) {}
 
-  manageGame(message: Message, library: DiscordLibrary): void {
+  manageGame(message: Message): void {
     if (this.discordUtilityService.isMention(message)) {
-      const targetChannel = this.discordUtilityService.getTargetChannel(library);
+      const targetChannel = this.discordUtilityService.getTargetChannel();
       if (targetChannel != undefined) {
         if (this.insiderGameService.isHandOut(message)) {
           const userList = this.discordUtilityService.getUserList(message);
