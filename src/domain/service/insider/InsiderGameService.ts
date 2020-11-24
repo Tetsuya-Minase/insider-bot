@@ -24,9 +24,9 @@ export class InsiderGameService {
     // TODO: やめたい
     // ループ用index
     let index = 0;
+    const theme = this.themeLibrary.getTheme();
     playerList.forEach(player => {
       const role = roleList[index];
-      const theme = this.themeLibrary.getTheme();
       if (['マスター', 'インサイダー'].includes(role)) {
         player.user.send(`あなたの役職は${roleList[index]}です。\nお題は${theme}です。`);
       } else {
