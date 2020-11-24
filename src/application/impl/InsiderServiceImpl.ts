@@ -3,13 +3,13 @@ import { InsiderService } from '../InsiderService';
 import { Message } from 'discord.js';
 import { DiscordLibrary } from '../../infrastructure/library/DiscordLibrary';
 import { SYMBOLS } from '../../di/symbols';
-import { DiscordUtilityService } from '../../domain/service/discord/DiscordUtilityService';
+import { DiscordService } from '../../domain/service/discord/DiscordService';
 import { InsiderGameService } from '../../domain/service/insider/InsiderGameService';
 
 @injectable()
 export class InsiderServiceImpl implements InsiderService {
   constructor(
-    @inject(SYMBOLS.DiscordUtilityService) private readonly discordUtilityService: DiscordUtilityService,
+    @inject(SYMBOLS.DiscordUtilityService) private readonly discordUtilityService: DiscordService,
     @inject(SYMBOLS.InsiderGameService) private readonly insiderGameService: InsiderGameService
   ) {}
 
