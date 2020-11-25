@@ -1,10 +1,10 @@
 import { injectable, inject } from 'inversify';
 import { Guild, Message } from 'discord.js';
-import { InvalidPlayerError } from '../../model/InvalidPlayerError';
 import shuffle from 'lodash/shuffle';
 import { SYMBOLS } from '../../../di/symbols';
 import { ThemeLibrary } from '../../../infrastructure/library/ThemeLibrary';
 import { Role } from '../../InsiderGameTypes';
+import { InvalidPlayerError } from '../../model/InvalidPlayerError';
 
 @injectable()
 export class InsiderGameService {
@@ -16,6 +16,11 @@ export class InsiderGameService {
     return message.content.includes('handout');
   }
 
+  /**
+   * 配役するメソッド
+   * @param targetChannel 配る先
+   * @param userList ユーザーリスト
+   */
   handOutRole(targetChannel: Guild, userList: string[]): string {
     const playerList = targetChannel.members.cache.filter(item => userList.includes(item.user.username));
     if (playerList.size < 4) {
@@ -45,9 +50,8 @@ export class InsiderGameService {
    * @private
    */
   private *getRoleGenerator(playerCount: number) {
-    const roleList: Role[] = shuffle(
-      [...this.baseRole, ...new Array(playerCount + 1 - this.baseRole.length)].map(_ => '庶民')
-    );
-    yield* roleList;
+    const additionalRoleCount = Math.max(playerCount + 1 - this.baseRole.length, 1);
+    const additionalRole = [...new Array(additionalRoleCount)].map(_ => '庶民');
+    yield* shuffle([...this.baseRole, ...additionalRole]);
   }
 }
