@@ -12,6 +12,10 @@ export class InsiderGameService {
 
   constructor(@inject(SYMBOLS.ThemeLibrary) private readonly themeLibrary: ThemeLibrary) {}
 
+  /**
+   * 配役コマンドかチェックする
+   * @param message メンションできたメッセージ
+   */
   isHandOut(message: Message): boolean {
     return message.content.includes('handout');
   }

@@ -1,11 +1,9 @@
 import { Message } from 'discord.js';
-import { DiscordLibrary } from '../infrastructure/library/DiscordLibrary';
 
 export interface InsiderService {
   /**
-   *
-   * @param message
-   * @param library
+   * メッセージを管理するメソッド
+   * @param message discordに投稿されたメッセージ
    */
-  manageGame(message: Message, library: DiscordLibrary): void;
+  manageMessage(message: Message): void;
 }
