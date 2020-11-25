@@ -1,12 +1,14 @@
-import config from 'config';
 import { injectable } from 'inversify';
-import shuffle from 'lodash/shuffle';
+import insiderData from '../../assets/insiderData.json';
 
 @injectable()
 export class ThemeLibrary {
-  private readonly BASE_THEME = config.get<string[]>('theme.default');
+  constructor() {}
 
-  getTheme(): string {
-    return shuffle(this.BASE_THEME)[0];
+  getTheme(): string[] {
+    return insiderData.theme;
+  }
+  getNgWord(): string[] {
+    return insiderData.ngWord;
   }
 }

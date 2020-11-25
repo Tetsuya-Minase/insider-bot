@@ -16,10 +16,12 @@
     "noImplicitAny": true,
     "strictNullChecks": true,
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     "types": [
       "reflect-metadata",
-      "google-apps-script"
+      "google-apps-script",
+      "node"
     ],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true

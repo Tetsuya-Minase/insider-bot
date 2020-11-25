@@ -21,6 +21,10 @@ module.exports = {
       }
     ]
   },
+  node:{
+    __dirname: false,
+    __filename: false
+  },
   resolve: {
     extensions: ['.js', '.json', '.ts'],
     modules: [path.join(__dirname, 'src'), 'node_modules']
