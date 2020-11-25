@@ -1,1 +1,1 @@
-export type Roles = 'マスター' | 'インサイダー' | '庶民';
+export type Role = 'マスター' | 'インサイダー' | '庶民';

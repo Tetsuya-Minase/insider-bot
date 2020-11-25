@@ -4,11 +4,11 @@ import { InvalidPlayerError } from '../../model/InvalidPlayerError';
 import shuffle from 'lodash/shuffle';
 import { SYMBOLS } from '../../../di/symbols';
 import { ThemeLibrary } from '../../../infrastructure/library/ThemeLibrary';
-import { Roles } from '../../InsiderGameTypes';
+import { Role } from '../../InsiderGameTypes';
 
 @injectable()
 export class InsiderGameService {
-  private readonly baseRole: Roles[] = ['マスター', 'インサイダー', '庶民', '庶民'];
+  private readonly baseRole: Role[] = ['マスター', 'インサイダー', '庶民', '庶民'];
 
   constructor(@inject(SYMBOLS.ThemeLibrary) private readonly themeLibrary: ThemeLibrary) {}
 
@@ -21,27 +21,33 @@ export class InsiderGameService {
     if (playerList.size < 4) {
       throw new InvalidPlayerError(playerList.size);
     }
-    const roleList = this.getRoleList(playerList.size);
-    // TODO: やめたい。役職取るのをジェネレーターにすればマシになりそう
-    // ループ用index
-    let index = 0;
     const theme = this.themeLibrary.getTheme();
+    const getRole = this.getRoleGenerator(playerList.size);
     playerList.forEach(player => {
-      const role = roleList[index];
-      if (['マスター', 'インサイダー'].includes(role)) {
-        player.user.send(`あなたの役職は${roleList[index]}です。\nお題は${theme}です。`);
-      } else {
-        player.user.send(`あなたの役職は${roleList[index]}です。`);
+      const role = getRole.next();
+      if (role.done) {
+        player.user.send(`あなたの役職なかったよ。配り直すしかないよ。`);
+        return;
       }
-      index++;
+      if (['マスター', 'インサイダー'].includes(role.value)) {
+        player.user.send(`あなたの役職は${role.value}です。\nお題は${theme}です。`);
+      } else {
+        player.user.send(`あなたの役職は${role.value}です。`);
+      }
     });
+
     return 'プレイヤーに配役しました';
   }
 
-  private getRoleList(playerCount: number): Roles[] {
-    return shuffle([
-      ...this.baseRole,
-      ...[...new Array(playerCount + 1 - this.baseRole.length)].map(_ => '庶民')
-    ]) as Roles[];
+  /**
+   * 役職リストを取得するジェネレーター
+   * @param playerCount プレイヤー人数
+   * @private
+   */
+  private *getRoleGenerator(playerCount: number) {
+    const roleList: Role[] = shuffle(
+      [...this.baseRole, ...new Array(playerCount + 1 - this.baseRole.length)].map(_ => '庶民')
+    );
+    yield* roleList;
   }
 }
