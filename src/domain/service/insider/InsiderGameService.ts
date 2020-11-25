@@ -1,13 +1,14 @@
 import { injectable, inject } from 'inversify';
 import { Guild, Message } from 'discord.js';
-import { InvalidPlayerError } from '../../model/InvalidPlayerError';
 import shuffle from 'lodash/shuffle';
 import { SYMBOLS } from '../../../di/symbols';
 import { ThemeLibrary } from '../../../infrastructure/library/ThemeLibrary';
+import { Role } from '../../InsiderGameTypes';
+import { InvalidPlayerError } from '../../model/InvalidPlayerError';
 
 @injectable()
 export class InsiderGameService {
-  private readonly baseRole = ['マスター', 'インサイダー', '庶民', '庶民'];
+  private readonly baseRole: Role[] = ['マスター', 'インサイダー', '庶民', '庶民'];
 
   constructor(@inject(SYMBOLS.ThemeLibrary) private readonly themeLibrary: ThemeLibrary) {}
 
@@ -15,29 +16,42 @@ export class InsiderGameService {
     return message.content.includes('handout');
   }
 
+  /**
+   * 配役するメソッド
+   * @param targetChannel 配る先
+   * @param userList ユーザーリスト
+   */
   handOutRole(targetChannel: Guild, userList: string[]): string {
     const playerList = targetChannel.members.cache.filter(item => userList.includes(item.user.username));
     if (playerList.size < 4) {
       throw new InvalidPlayerError(playerList.size);
     }
-    const roleList = this.getRoleList(playerList.size);
-    // TODO: やめたい
-    // ループ用index
-    let index = 0;
+    const theme = this.themeLibrary.getTheme();
+    const getRole = this.getRoleGenerator(playerList.size);
     playerList.forEach(player => {
-      const role = roleList[index];
-      const theme = this.themeLibrary.getTheme();
-      if (['マスター', 'インサイダー'].includes(role)) {
-        player.user.send(`あなたの役職は${roleList[index]}です。\nお題は${theme}です。`);
-      } else {
-        player.user.send(`あなたの役職は${roleList[index]}です。`);
+      const role = getRole.next();
+      if (role.done) {
+        player.user.send(`あなたの役職なかったよ。配り直すしかないよ。`);
+        return;
       }
-      index++;
+      if (['マスター', 'インサイダー'].includes(role.value)) {
+        player.user.send(`あなたの役職は${role.value}です。\nお題は${theme}です。`);
+      } else {
+        player.user.send(`あなたの役職は${role.value}です。`);
+      }
     });
+
     return 'プレイヤーに配役しました';
   }
 
-  private getRoleList(playerCount: number): string[] {
-    return shuffle([...this.baseRole, ...[...new Array(playerCount + 1 - this.baseRole.length)].map(_ => '庶民')]);
+  /**
+   * 役職リストを取得するジェネレーター
+   * @param playerCount プレイヤー人数
+   * @private
+   */
+  private *getRoleGenerator(playerCount: number) {
+    const additionalRoleCount = Math.max(playerCount + 1 - this.baseRole.length, 1);
+    const additionalRole = [...new Array(additionalRoleCount)].map(_ => '庶民');
+    yield* shuffle([...this.baseRole, ...additionalRole]);
   }
 }
