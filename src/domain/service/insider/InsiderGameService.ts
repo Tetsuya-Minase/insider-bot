@@ -13,21 +13,14 @@ export class InsiderGameService {
   constructor(@inject(SYMBOLS.ThemeLibrary) private readonly themeLibrary: ThemeLibrary) {}
 
   /**
-   * 配役コマンドかチェックする
-   * @param message メンションできたメッセージ
-   */
-  isHandOut(message: Message): boolean {
-    return message.content.includes('handout');
-  }
-
-  /**
    * 配役するメソッド
    * @param targetChannel 配る先
    * @param userList ユーザーリスト
+   * @param isDebug debugモード(人数制限の解除)
    */
-  handOutRole(targetChannel: Guild, userList: string[]): string {
+  handOutRole(targetChannel: Guild, userList: string[], isDebug: boolean = false): string {
     const playerList = targetChannel.members.cache.filter(item => userList.includes(item.user.username));
-    if (playerList.size < 4) {
+    if (playerList.size < 4 && !isDebug) {
       throw new InvalidPlayerError(playerList.size);
     }
     const theme = this.themeLibrary.getTheme();
@@ -41,7 +34,7 @@ export class InsiderGameService {
       if (['マスター', 'インサイダー'].includes(role.value)) {
         player.user.send(`あなたの役職は${role.value}です。\nお題は${theme}です。`);
       } else {
-        player.user.send(`あなたの役職は${role.value}です。`);
+        player.user.send(`あなたの役職は${role.value}です。${isDebug ? `\nお題は${theme}です。` : ''}`);
       }
     });
 

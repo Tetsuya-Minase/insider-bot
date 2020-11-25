@@ -26,16 +26,40 @@ export class InsiderServiceImpl implements InsiderService {
       return;
     }
 
-    // 配役
-    if (this.insiderGameService.isHandOut(message)) {
-      const userList = this.discordService.getUserList(message);
-      try {
-        const result = this.insiderGameService.handOutRole(targetChannel, userList);
-        message.reply(result);
-      } catch (ex) {
-        message.reply(ex.message);
+    switch (this.discordMessageService.checkCommand(message)) {
+      case 'handout':
+        const userList = this.discordService.getUserList(message);
+        try {
+          const result = this.insiderGameService.handOutRole(targetChannel, userList);
+          message.reply(result);
+          return;
+        } catch (ex) {
+          message.reply(ex.message);
+          return;
+        }
+      case 'debug':
+        // 配役、テーマのデバッグ用
+        try {
+          const result = this.insiderGameService.handOutRole(
+            targetChannel,
+            this.discordService.getUserList(message),
+            true
+          );
+          message.reply(result);
+          return;
+        } catch (ex) {
+          message.reply(ex.message);
+          return;
+        }
+      case 'timer':
+      case 'help':
+        message.reply(`これが使い方だよ。
+        -----
+        handout: 配役するよ。handoutの後ろにプレイヤーの名前半角スペース区切りで入れるんだよ。
+        help: わからなくなったら聞いてね。
+        -----
+        `);
         return;
-      }
     }
   }
 }
