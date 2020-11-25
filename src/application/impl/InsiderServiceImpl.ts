@@ -1,7 +1,6 @@
 import { injectable, inject } from 'inversify';
 import { InsiderService } from '../InsiderService';
 import { Message } from 'discord.js';
-import { DiscordLibrary } from '../../infrastructure/library/DiscordLibrary';
 import { SYMBOLS } from '../../di/symbols';
 import { DiscordService } from '../../domain/service/discord/DiscordService';
 import { InsiderGameService } from '../../domain/service/insider/InsiderGameService';
@@ -20,14 +19,14 @@ export class InsiderServiceImpl implements InsiderService {
         if (this.insiderGameService.isHandOut(message)) {
           const userList = this.discordUtilityService.getUserList(message);
           try {
-            this.insiderGameService.handOutRole(targetChannel, userList);
+            const result = this.insiderGameService.handOutRole(targetChannel, userList);
+            message.reply(result);
           } catch (ex) {
             message.reply(ex.message);
             return;
           }
         }
       }
-      message.reply('全員に配役したよ');
     }
   }
 }
