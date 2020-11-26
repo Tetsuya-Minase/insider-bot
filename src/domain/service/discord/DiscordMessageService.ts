@@ -2,7 +2,7 @@ import { injectable } from 'inversify';
 import { Message } from 'discord.js';
 import config from 'config';
 
-type CommandType = 'handout' | 'help' | 'debug' | 'timer';
+type CommandType = 'handout' | 'help' | 'debug' | 'start' | 'stop';
 
 /**
  * ディスコードのメッセージに関するクラス
@@ -31,9 +31,13 @@ export class DiscordMessageService {
     if (messageContent.includes('debug')) {
       return 'debug';
     }
-    if (messageContent.includes('timer')) {
-      return 'timer';
+    if (messageContent.includes('start')) {
+      return 'start';
     }
+    if (messageContent.includes('stop')) {
+      return 'stop';
+    }
+
     return 'help';
   }
 }

@@ -5,12 +5,18 @@ import { SYMBOLS } from '../../../di/symbols';
 import { ThemeLibrary } from '../../../infrastructure/library/ThemeLibrary';
 import { Role } from '../../InsiderGameTypes';
 import { InvalidPlayerError } from '../../model/InvalidPlayerError';
+import Timeout = NodeJS.Timeout;
+import { TimerService } from '../common/TimerService';
 
 @injectable()
 export class InsiderGameService {
   private readonly baseRole: Role[] = ['マスター', 'インサイダー', '庶民', '庶民'];
+  private timer: Timeout | undefined;
 
-  constructor(@inject(SYMBOLS.ThemeLibrary) private readonly themeLibrary: ThemeLibrary) {}
+  constructor(
+    @inject(SYMBOLS.ThemeLibrary) private readonly themeLibrary: ThemeLibrary,
+    @inject(SYMBOLS.TimerService) private readonly timerService: TimerService
+  ) {}
 
   /**
    * 配役するメソッド
@@ -39,6 +45,48 @@ export class InsiderGameService {
     });
 
     return 'プレイヤーに配役しました';
+  }
+
+  /**
+   * タイマーをハンドリングする
+   * @param seconds タイマーの時間(秒)
+   * @param message メッセージ
+   */
+  startTimer(seconds: number, message: Message) {
+    message.reply('開始だよ。');
+    this.timerService
+      .startTimer(seconds)
+      .then(result => {
+        if (result == undefined) {
+          message.reply('もう開始してたよ！');
+          return;
+        }
+        message.reply(`終わりだよ。\n残り時間は${result}秒だよ。`);
+      })
+      .catch(err => {
+        console.log(err);
+        message.reply('やんごとない何かが起こったよ……');
+      });
+  }
+
+  /**
+   * タイマーを停止する
+   * @param message メッセージ
+   */
+  stopTimer(message: Message) {
+    this.timerService
+      .stopTimer()
+      .then(result => {
+        if (result == undefined) {
+          message.reply('もう終わってるよ！');
+          return;
+        }
+        message.reply(`終わりだよ。\n残り時間は${result}秒だよ。`);
+      })
+      .catch(err => {
+        console.log(err);
+        message.reply('やんごとない何かが起こったよ……');
+      });
   }
 
   /**

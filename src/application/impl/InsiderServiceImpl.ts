@@ -51,7 +51,12 @@ export class InsiderServiceImpl implements InsiderService {
           message.reply(ex.message);
           return;
         }
-      case 'timer':
+      case 'start':
+        this.insiderGameService.startTimer(30, message);
+        return;
+      case 'stop':
+        this.insiderGameService.stopTimer(message);
+        return;
       case 'help':
         message.reply(`これが使い方だよ。
         -----
