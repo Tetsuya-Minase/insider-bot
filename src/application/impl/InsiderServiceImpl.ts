@@ -52,7 +52,8 @@ export class InsiderServiceImpl implements InsiderService {
           return;
         }
       case 'start':
-        this.insiderGameService.startTimer(30, message);
+        const count = this.discordService.getTimerCount(message);
+        this.insiderGameService.startTimer(count, message);
         return;
       case 'stop':
         this.insiderGameService.stopTimer(message);
