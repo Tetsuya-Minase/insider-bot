@@ -15,7 +15,7 @@ export class DiscordBot {
 
   connectBot() {
     this.library.client.on('message', (msg: Message) => {
-      this.insiderService.manageGame(msg, this.library);
+      this.insiderService.manageMessage(msg);
     });
     this.library.client.login(this.token);
   }
