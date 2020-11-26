@@ -62,6 +62,7 @@ export class InsiderServiceImpl implements InsiderService {
         message.reply(`これが使い方だよ。
         -----
         handout: 配役するよ。handoutの後ろにプレイヤーの名前半角スペース区切りで入れるんだよ。
+        start: タイマー起動するよ。 timerの後ろにタイマーの秒数を入れるんだよ。 
         help: わからなくなったら聞いてね。
         -----
         `);
